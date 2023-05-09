@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import os
 import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -30,13 +31,13 @@ DEFAULT_APPS = [
 ]
 
 # These are the third party apps that we are using in our project.
-THIRD_PARTY_APPS = []
+THIRD_PARTY_APPS = ['jet.dashboard', 'jet',]
 
 # These are the custom apps that we created to complete requirements of our project.
 CUSTOM_APPS = []
 
 # A list of all the apps that are installed in our project.
-INSTALLED_APPS = DEFAULT_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
+INSTALLED_APPS = THIRD_PARTY_APPS + DEFAULT_APPS + CUSTOM_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -53,7 +54,7 @@ ROOT_URLCONF = 'MediLeaf_backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR /"templates",],
+        'DIRS': [BASE_DIR / "templates",],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -87,11 +88,11 @@ DATABASES = {
     }
 }
 
-EMAIL_USE_TLS=True
-EMAIL_HOST=env.str('EMAIL_HOST')
-EMAIL_HOST_USER=env.str('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD=env.str('EMAIL_HOST_PASSWORD')
-EMAIL_PORT=587
+EMAIL_USE_TLS = True
+EMAIL_HOST = env.str('EMAIL_HOST')
+EMAIL_HOST_USER = env.str('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = 587
 DEFAULT_FROM_EMAIL = env.str('EMAIL_HOST_USER')
 
 
@@ -129,9 +130,46 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Django jet theme
+JET_DEFAULT_THEME = 'default'
+JET_SIDE_MENU_COMPACT = True
+JET_THEMES = [
+    {
+        'theme': 'default',  # theme folder name
+        'color': '#47bac1',  # color of the theme's button in user menu
+        'title': 'Default'  # theme title
+    },
+    {
+        'theme': 'green',
+        'color': '#44b78b',
+        'title': 'Green'
+    },
+    {
+        'theme': 'light-green',
+        'color': '#2faa60',
+        'title': 'Light Green'
+    },
+    {
+        'theme': 'light-violet',
+        'color': '#a464c4',
+        'title': 'Light Violet'
+    },
+    {
+        'theme': 'light-blue',
+        'color': '#5EADDE',
+        'title': 'Light Blue'
+    },
+    {
+        'theme': 'light-gray',
+        'color': '#222',
+        'title': 'Light Gray'
+    }
+]
