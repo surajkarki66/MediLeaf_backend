@@ -22,6 +22,7 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStamp):
         ]
     )
     country = CountryField(blank_label="(select country)")
+    verification_link_expiration = models.DateTimeField(null=True, blank=True)
     is_verified = models.BooleanField(default=False, verbose_name='Verified')
     is_active = models.BooleanField('active', default=True,
                                     help_text=_(
