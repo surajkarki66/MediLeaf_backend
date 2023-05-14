@@ -3,7 +3,7 @@ import os
 from rest_framework.views import APIView
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
-from django.contrib.auth import get_user_model, login
+from django.contrib.auth import get_user_model, login, logout
 from email.mime.image import MIMEImage
 from django.db import transaction
 from django.utils import timezone
@@ -121,4 +121,20 @@ class LoginAPIView(APIView):
         return Response({
             'message': 'Login Successful',
             'expired_date': expired_date,
+        }, status=status.HTTP_200_OK)
+
+
+class LogoutAPIView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request):
+        """
+        It logs out the user and flushes the session
+
+        :param request: The request object
+        :return: A response object with a message and a status code.
+        """
+        logout(request)
+        return Response({
+            'message': 'User logged out successfully'
         }, status=status.HTTP_200_OK)
