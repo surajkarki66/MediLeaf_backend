@@ -1,6 +1,6 @@
 from django.urls import include, path
 
-from .views import SignUpAPIView, LoginAPIView, LogoutAPIView, PasswordChangeAPIView, me, ForgotPasswordAPIView
+from .views import SignUpAPIView, LoginAPIView, LogoutAPIView, PasswordChangeAPIView, me, ForgotPasswordAPIView, ResetPasswordTokenCheckAPIView
 
 
 urlpatterns = [
@@ -12,5 +12,7 @@ urlpatterns = [
          name='password-change-api'),
     path('forgot-password/', ForgotPasswordAPIView.as_view(),
          name='forgot-password-api'),
+    path('reset-password/<slug:uidb64>/<slug:token>/',
+         ResetPasswordTokenCheckAPIView.as_view(), name='reset-password-api'),
 
 ]
