@@ -143,3 +143,23 @@ class ForgotPasswordSerializer(serializers.Serializer):
             })
         return value
 
+class ResetPasswordSerializer(serializers.Serializer):
+    new_password = serializers.CharField(max_length=128, write_only=True, required=True, validators=[validate_password])
+    confirm_new_password = serializers.CharField(max_length=128, write_only=True, required=True)
+    class Meta:
+        fields = ('new_password', 'confirm_new_password')
+
+    def validate(self, attrs):
+        """
+        If the new password and the confirm new password fields don't match, raise a validation error
+        
+        :param attrs: The validated data from the serializer
+        :return: The attrs dictionary is being returned.
+        """
+        if attrs['new_password'] != attrs['confirm_new_password']:
+            raise ValidationError({
+                'message': ["The two password fields didn't match."]
+            })
+        validate_password(attrs['new_password'])
+        return attrs
+
