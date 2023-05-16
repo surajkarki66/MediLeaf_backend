@@ -163,3 +163,20 @@ class ResetPasswordSerializer(serializers.Serializer):
         validate_password(attrs['new_password'])
         return attrs
 
+class ResendVerificationEmailSerializer(serializers.Serializer):
+    email = serializers.EmailField(allow_null=False)
+    class Meta:
+        fields = ['email']
+
+    def validate_email(self, value):
+        """
+        If the email does not exist in the database, raise a validation error
+        
+        :param value: The value that is being validated
+        :return: The value of the email address.
+        """
+        if not User.objects.filter(email=value).exists():
+            raise serializers.ValidationError({
+                'message': ['Email does not exist. Please try again with valid email address.']
+            })
+        return value
