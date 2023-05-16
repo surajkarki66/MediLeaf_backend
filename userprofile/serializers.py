@@ -1,7 +1,11 @@
 from rest_framework import serializers
 from rest_framework.validators import ValidationError
+from django_countries.serializers import CountryFieldMixin
+from django_countries.serializer_fields import CountryField
 
+from account.models import User
 from .models import Profile
+
 
 class ProfileUpdateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -48,7 +52,6 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
 
         return self.instance
 
-
     def is_valid(self, raise_exception=False):
         assert hasattr(self, 'initial_data'), (
             'Cannot call `.is_valid()` as no `data=` keyword argument was '
@@ -68,3 +71,23 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
             raise ValidationError({'message': self.errors})
 
         return not bool(self._errors)
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()
+
+    class Meta:
+        model = Profile
+        fields = '__all__'
+        read_only_fields = ('user',)
+
+
+class UserProfileSerializer(CountryFieldMixin, serializers.ModelSerializer):
+    profile = ProfileSerializer(many=False)
+    country = CountryField(country_dict=True)
+
+    class Meta:
+        model = User
+        exclude = ('password', 'is_active', 'is_staff')
+        read_only_fields = ('created_at', 'is_verified',
+                            'updated_at', 'last_login', 'is_superuser', 'country',)
