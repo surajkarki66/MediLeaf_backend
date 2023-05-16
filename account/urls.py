@@ -1,6 +1,6 @@
 from django.urls import include, path
 
-from .views import SignUpAPIView, LoginAPIView, LogoutAPIView, PasswordChangeAPIView, me, ForgotPasswordAPIView, ResetPasswordTokenCheckAPIView
+from .views import SignUpAPIView, LoginAPIView, LogoutAPIView, PasswordChangeAPIView, me, ForgotPasswordAPIView, ResetPasswordTokenCheckAPIView, VerifyAccountAPIView, ResendVerificationAPIView
 
 
 urlpatterns = [
@@ -8,6 +8,10 @@ urlpatterns = [
     path('login/', LoginAPIView.as_view(), name='login-api'),
     path('logout/', LogoutAPIView.as_view(), name='logout-api'),
     path('me/', me, name='me'),
+    path('verify/<slug:uid>/<slug:token>/',
+         VerifyAccountAPIView.as_view(), name="account-verify"),
+    path('resend/verification/email/', ResendVerificationAPIView.as_view(),
+         name='resend-verification-email-api'),
     path('password/change/', PasswordChangeAPIView.as_view(),
          name='password-change-api'),
     path('forgot-password/', ForgotPasswordAPIView.as_view(),
