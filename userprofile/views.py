@@ -1,8 +1,10 @@
 from rest_framework import permissions, status, viewsets
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 from .models import Profile
 from account.permissions import IsOwner, IsVerifiedUser
-from .serializers import ProfileUpdateSerializer
+from .serializers import ProfileUpdateSerializer, UserProfileSerializer
 
 
 class ProfileViewSet(viewsets.ModelViewSet):
@@ -33,3 +35,25 @@ class ProfileViewSet(viewsets.ModelViewSet):
             return [permissions.IsAuthenticated(), IsVerifiedUser()]
 
         return super().get_permissions()
+
+
+class UserProfileAPIView(APIView):
+    serializer_class = UserProfileSerializer
+    permission_classes = (permissions.IsAuthenticated, IsVerifiedUser)
+    http_method_names = ('get',)
+
+    def get(self, request):
+        """
+        If the user is not verified, raise an error. Otherwise, return the user's profile
+
+        :param request: The request object
+        :return: The serialized data of the user.
+        """
+
+        serialized = UserProfileSerializer(
+            request.user, context={"request": request})
+        data = serialized.data
+        data['user_permissions'] = request.user.get_all_permissions()
+        return Response({
+            'results': data
+        }, status=status.HTTP_200_OK)

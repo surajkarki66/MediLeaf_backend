@@ -11,4 +11,5 @@ app = 'userprofile'
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('user-profile/', views.UserProfileAPIView.as_view(), name='user-profile'),
 ]
