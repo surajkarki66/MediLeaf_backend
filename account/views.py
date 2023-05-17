@@ -19,6 +19,7 @@ from django.contrib.auth.models import Group
 from django.core.mail import EmailMultiAlternatives
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.template.loader import get_template
+from drf_spectacular.utils import extend_schema
 
 from .permissions import IsOwnerOrReadOnly, IsVerifiedUser
 from .serializers import SignUpSerializer, LoginSerializer, PasswordChangeSerializer, UserUpdateSerializer, ForgotPasswordSerializer, ResetPasswordSerializer, ResendVerificationEmailSerializer
@@ -30,6 +31,7 @@ User = get_user_model()
 tz = get_current_timezone()
 
 
+@extend_schema(summary='User signup', tags=['Account'])
 class SignUpAPIView(generics.CreateAPIView):
     serializer_class = SignUpSerializer
     queryset = User.objects.all()
@@ -110,6 +112,7 @@ class LoginAPIView(APIView):
     serializer_class = LoginSerializer
     permission_classes = (permissions.AllowAny,)
 
+    @extend_schema(summary="User Login", tags=["Account"])
     def post(self, request):
         """
         The function takes in a request, validates the request, logs the user in, and returns a response
@@ -135,6 +138,7 @@ class LoginAPIView(APIView):
 class LogoutAPIView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
+    @extend_schema(summary="User Logout", tags=["Account"])
     def post(self, request):
         """
         It logs out the user and flushes the session
@@ -148,6 +152,7 @@ class LogoutAPIView(APIView):
         }, status=status.HTTP_200_OK)
 
 
+@extend_schema(summary="User password change", tags=["Account"])
 class PasswordChangeAPIView(generics.CreateAPIView):
     serializer_class = PasswordChangeSerializer
     permission_classes = (permissions.IsAuthenticated, )
@@ -205,6 +210,7 @@ def me(request):
         return Response('not logged in', status.HTTP_401_UNAUTHORIZED)
 
 
+@extend_schema(summary="Forgot password", tags=["Account"])
 class ForgotPasswordAPIView(APIView):
     serializer_class = ForgotPasswordSerializer
     permission_classes = (permissions.AllowAny,)
@@ -285,6 +291,7 @@ class ResetPasswordTokenCheckAPIView(APIView):
     serializer_class = ResetPasswordSerializer
     permission_classes = (permissions.AllowAny,)
 
+    @extend_schema(summary="Verify user token and uuid", tags=["Account"])
     def get(self, request, uidb64, token):
         """
         It checks if the user exists, if the token is valid, and if the token is expired
@@ -331,6 +338,7 @@ class ResetPasswordTokenCheckAPIView(APIView):
                 }
             }, status=status.HTTP_400_BAD_REQUEST)
 
+    @extend_schema(summary="Reset user password", tags=["Account"])
     def post(self, request, *args, **kwargs):
         """
         The function takes in a request, checks if the request is valid, if it is, it checks if the
@@ -400,6 +408,8 @@ class ResetPasswordTokenCheckAPIView(APIView):
 class VerifyAccountAPIView(APIView):
     permission_classes = (permissions.AllowAny, )
 
+
+    @extend_schema(summary="User account verify", tags=["Account"])
     def get(self, request, uid, token, *args, **kwargs):
         """
         It checks if the user exists, if the token is valid, if the user is already verified, and if
@@ -444,7 +454,7 @@ class VerifyAccountAPIView(APIView):
                 user.save()
         return Response(context, status=status.HTTP_200_OK)
 
-
+@extend_schema(summary='Resend verification email', tags=['Account'])  
 class ResendVerificationAPIView(APIView):
     serializer_class = ResendVerificationEmailSerializer
     permission_classes = (permissions.AllowAny,)
@@ -528,6 +538,7 @@ class ResendVerificationAPIView(APIView):
             'message': 'We have sent verification link to your email. Please check your email address.'
         }, status=status.HTTP_201_CREATED)
 
+@extend_schema(summary="User Update", tags=["Account"])
 class UserUpdateAPIView(generics.UpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserUpdateSerializer

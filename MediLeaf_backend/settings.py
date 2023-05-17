@@ -33,7 +33,8 @@ DEFAULT_APPS = [
 ]
 
 # These are the third party apps that we are using in our project.
-THIRD_PARTY_APPS = ['django_countries', 'rest_framework',]
+THIRD_PARTY_APPS = ['django_countries', 'rest_framework',
+                    'drf_spectacular', 'drf_spectacular_sidecar',]
 
 # These are the custom apps that we created to complete requirements of our project.
 CUSTOM_APPS = ['account', 'userprofile', 'utilities', ]
@@ -185,6 +186,7 @@ SITE_DOMAIN = env('SITE_DOMAIN')
 
 # DRF global settings
 REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.FormParser',
         'rest_framework.parsers.MultiPartParser',
@@ -202,4 +204,28 @@ REST_FRAMEWORK = {
         'account.authentication.CsrfExemptSessionAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ]
+}
+
+# Swagger settings
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'MediLeaf API',
+    'DESCRIPTION': 'Medicinal Properties Finder with the Power of Leaf',
+    'VERSION': '0.0.1',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True,
+    'CAMELIZE_NAMES': True,
+    'SCHEMA_PATH_PREFIX': r'/api/{version}/',
+
+    # side car settings
+    'SWAGGER_UI_DIST': 'SIDECAR',  # shorthand to use the sidecar instead
+    'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
+    'REDOC_DIST': 'SIDECAR',
+
+    # OTHER SETTINGS
+    "SWAGGER_UI_SETTINGS": {
+        "deepLinking": True,
+        "persistAuthorization": True,
+        "displayOperationId": True,
+    },
+
 }

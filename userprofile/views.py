@@ -1,12 +1,13 @@
 from rest_framework import permissions, status, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema
 
 from .models import Profile
 from account.permissions import IsOwner, IsVerifiedUser
 from .serializers import ProfileUpdateSerializer, UserProfileSerializer
 
-
+@extend_schema(summary='User profile View set', tags=['Profile'])
 class ProfileViewSet(viewsets.ModelViewSet):
     '''This class is a viewset that allows you to create and update a user's profile'''
     queryset = Profile.objects.all()
@@ -42,6 +43,7 @@ class UserProfileAPIView(APIView):
     permission_classes = (permissions.IsAuthenticated, IsVerifiedUser)
     http_method_names = ('get',)
 
+    @extend_schema(summary="User all profile details", tags=["Profile"])
     def get(self, request):
         """
         If the user is not verified, raise an error. Otherwise, return the user's profile
