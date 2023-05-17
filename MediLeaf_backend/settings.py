@@ -33,7 +33,7 @@ DEFAULT_APPS = [
 ]
 
 # These are the third party apps that we are using in our project.
-THIRD_PARTY_APPS = ['django_countries',]
+THIRD_PARTY_APPS = ['django_countries', 'rest_framework',]
 
 # These are the custom apps that we created to complete requirements of our project.
 CUSTOM_APPS = ['account', 'userprofile', 'utilities', ]
@@ -89,6 +89,8 @@ DATABASES = {
         'HOST': env.str('DATABASE_HOST'),
     }
 }
+
+# Email configuration
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = env.str('EMAIL_HOST')
@@ -176,3 +178,28 @@ JET_THEMES = [
 ]
 JET_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultIndexDashboard'
 JET_APP_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultAppIndexDashboard'
+
+# Site configuration
+SITE_DOMAIN = env('SITE_DOMAIN')
+
+
+# DRF global settings
+REST_FRAMEWORK = {
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser',
+        'rest_framework.parsers.JSONParser'
+    ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated'],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 10,
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'account.authentication.CsrfExemptSessionAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
+}
