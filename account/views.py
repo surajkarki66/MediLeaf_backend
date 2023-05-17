@@ -1,8 +1,11 @@
 import os
 
+from datetime import datetime
+
 from rest_framework.views import APIView
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
+from rest_framework.exceptions import ParseError
 from django.contrib.auth import get_user_model, login, logout, authenticate
 from email.mime.image import MIMEImage
 from django.db import transaction
@@ -19,6 +22,7 @@ from django.template.loader import get_template
 
 from .permissions import IsOwnerOrReadOnly, IsVerifiedUser
 from .serializers import SignUpSerializer, LoginSerializer, PasswordChangeSerializer, UserUpdateSerializer, ForgotPasswordSerializer, ResetPasswordSerializer, ResendVerificationEmailSerializer
+from userprofile.serializers import ProfileUpdateSerializer, UserProfileSerializer
 from MediLeaf_backend.email_thread import EmailThread
 
 
@@ -523,3 +527,56 @@ class ResendVerificationAPIView(APIView):
         return Response({
             'message': 'We have sent verification link to your email. Please check your email address.'
         }, status=status.HTTP_201_CREATED)
+
+class UserUpdateAPIView(generics.UpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserUpdateSerializer
+    permission_classes = (permissions.IsAuthenticated,
+                        IsOwnerOrReadOnly, IsVerifiedUser,)
+    lookup_field = 'pk'
+
+    def update(self, request, *args, **kwargs):
+        """
+        :param request: The request object
+        :return: The serializer.data is being returned.
+        """
+        """
+        :param request: The request object
+        :return: The serializer.data is being returned.
+        """
+        partial = kwargs.pop('partial', True)
+        instance = self.get_object()
+
+        serializer = self.serializer_class(
+            instance, data=request.data, partial=partial)
+
+        if serializer.is_valid():
+            user = serializer.save(updated_at=datetime.now(tz=tz))
+        else:
+            raise ParseError({
+                'message': serializer.errors
+            }, status.HTTP_400_BAD_REQUEST)
+        
+        if hasattr(user, 'profile'):
+            profile_instance = user.profile
+            profile_serializer = ProfileUpdateSerializer(profile_instance, data=request.data, partial=partial)  
+        else:
+            data = request.data
+            if hasattr(data, '_mutable'):
+                data._mutable = True
+
+            data['user']=instance.id
+            profile_serializer = ProfileUpdateSerializer(data=data)
+
+        if profile_serializer.is_valid():
+            profile_serializer.save()
+        else:
+            raise ParseError({
+                'message': profile_serializer.errors
+            }, status.HTTP_400_BAD_REQUEST)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            instance._prefetched_objects_cache = {}
+
+        serializer = UserProfileSerializer(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)

@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, get_user_model
 from django_countries.serializers import CountryFieldMixin
+from django_countries.serializer_fields import CountryField
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -121,6 +122,7 @@ class PasswordChangeSerializer(serializers.Serializer):
         return attrs
 
 class UserUpdateSerializer(CountryFieldMixin, serializers.ModelSerializer):
+    country = CountryField(country_dict=True)
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'contact', 'country',)
