@@ -10,6 +10,7 @@ admin.site.site_header = _('MediLeaf administration')
 urlpatterns = [
     path('jet/', include('jet.urls', 'jet')),
     path('jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),
+    path('ckeditor5/', include('django_ckeditor_5.urls')),
     path('admin/', admin.site.urls),
 
     path('api/v1/', include('account.urls')),
