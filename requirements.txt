@@ -182,7 +182,7 @@ tinycss2==1.2.1
 tldr==3.2.0
 tomli==2.0.1
 tomlkit==0.11.8
-tornado==6.2
+tornado==6.3.2
 traitlets==5.9.0
 trove-classifiers==2023.5.16
 typing_extensions==4.5.0
