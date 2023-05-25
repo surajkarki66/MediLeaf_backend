@@ -1,6 +1,8 @@
 import os
-from datetime import datetime
 
+from datetime import datetime
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -13,23 +15,13 @@ from utilities.utils import unique_update_slugify
 
 User = get_user_model()
 
-
 def get_upload_to(instance,  filename):
-    """
-    The function accepts a model instance and filename and generates
-    a slugified path to the file based on Profile User Fullname. 
-
-    :param instance: The instance of the model where the ImageField is being defined. In this case, since
-    Profile is a model, instance will be an instance of that model (an object)
-    :param filename: The name of the file that was uploaded
-    :return: The path to the file.
-    """
-    _, image_extension = os.path.splitext(instance.avatar.path)
-    image_path = 'avatars/'
+    user_id = slugify(instance.user.id)
     username = slugify(instance.user.get_fullname())
-    new_filename = username + '_300x300' + image_extension
-    return os.path.join(image_path, new_filename)
+    new_filename = user_id + "_" + username + '_300x300_'
+    image_path = f"avatars/{new_filename}"
 
+    return image_path
 
 class Profile(TimeStamp):
     slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)
@@ -79,3 +71,15 @@ class Profile(TimeStamp):
         self.slug = unique_update_slugify(
             self, self._state.adding, slugify(self.user.get_fullname()))
         super(Profile, self).save(*args, **kwargs)
+
+
+@receiver(post_delete, sender=Profile)
+def delete_avatar(sender, instance, **kwargs):
+    import cloudinary
+    import cloudinary.uploader
+
+    result = cloudinary.uploader.destroy(str(instance.avatar))
+    print(result)
+
+
+# TODO: Also delete image when user profile is updated
