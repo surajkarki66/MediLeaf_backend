@@ -4,10 +4,14 @@ from django.conf.urls import static
 from django.urls import path, include
 from django.utils.translation import gettext_lazy as _
 
+from .views import api_status
+
 
 admin.site.site_header = _('MediLeaf administration')
 
 urlpatterns = [
+    path('', api_status, name='api_status'),
+
     path('jet/', include('jet.urls', 'jet')),
     path('jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),
     path('ckeditor5/', include('django_ckeditor_5.urls')),
