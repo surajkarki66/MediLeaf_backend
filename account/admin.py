@@ -35,7 +35,7 @@ class UserAdmin(admin.ModelAdmin):
         return f'{obj.first_name} {obj.last_name}'.strip()
 
     @admin.display(description='Staff', boolean=True)
-    def staff_status(sef, obj):
+    def staff_status(self, obj):
         """
         The function checks if an object has staff status.
 
