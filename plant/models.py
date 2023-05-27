@@ -4,12 +4,14 @@ from django.db import models
 from utilities.models import TimeStamp
 from django.dispatch import receiver
 from django.contrib.postgres.fields import ArrayField
-from django.db.models.signals import post_delete
+from django.db.models.signals import post_delete, pre_save
 from django_ckeditor_5.fields import CKEditor5Field
 from django.template.defaultfilters import slugify
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
+from django.conf import settings
+
 
 from utilities.utils import unique_update_slugify
 from utilities.validators import ImageValidator
@@ -18,7 +20,7 @@ from utilities.validators import ImageValidator
 def get_upload_to(instance,  filename):
     scientific_name = slugify(instance.plant.get_scientific_name())
     plant_part = slugify(instance.part)
-    new_filename = scientific_name + '_300x300_' + plant_part + "_"
+    new_filename = scientific_name + '_' + plant_part + "_"
     image_path = f"plants/{scientific_name}/{new_filename}"
 
     return image_path
@@ -218,7 +220,7 @@ class PlantImage(TimeStamp):
         Plant, on_delete=models.CASCADE, related_name='images')
     part = models.CharField(max_length=7, choices=Part)
     image = models.ImageField(upload_to=get_upload_to, validators=[
-        ImageValidator(width=300, height=300, size=500*1024)])
+        ImageValidator(size=1000*1024)])
     default = models.BooleanField(default=False)
 
     def image_tag(self):
@@ -239,13 +241,3 @@ class PlantImage(TimeStamp):
 
     def __str__(self):
         return f'{self.image}'
-
-@receiver(post_delete, sender=PlantImage)
-def delete_plant_image(sender, instance, **kwargs):
-    import cloudinary
-    import cloudinary.uploader
-
-    result = cloudinary.uploader.destroy(str(instance.image))
-    print(result)
-
-# TODO: Also delete image when plant image is updated
