@@ -15,6 +15,7 @@ from utilities.utils import unique_update_slugify
 
 User = get_user_model()
 
+
 def get_upload_to(instance,  filename):
     user_id = slugify(instance.user.id)
     username = slugify(instance.user.get_fullname())
@@ -22,6 +23,7 @@ def get_upload_to(instance,  filename):
     image_path = f"avatars/{new_filename}"
 
     return image_path
+
 
 class Profile(TimeStamp):
     slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)
@@ -71,15 +73,3 @@ class Profile(TimeStamp):
         self.slug = unique_update_slugify(
             self, self._state.adding, slugify(self.user.get_fullname()))
         super(Profile, self).save(*args, **kwargs)
-
-
-@receiver(post_delete, sender=Profile)
-def delete_avatar(sender, instance, **kwargs):
-    import cloudinary
-    import cloudinary.uploader
-
-    result = cloudinary.uploader.destroy(str(instance.avatar))
-    print(result)
-
-
-# TODO: Also delete image when user profile is updated
