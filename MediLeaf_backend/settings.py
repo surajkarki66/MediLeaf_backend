@@ -93,6 +93,18 @@ DATABASES = {
     }
 }
 
+if DEBUG:
+    DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env.str('POSTGRES_DATABASE'),
+        'USER': env.str('POSTGRES_USER'),
+        'PASSWORD': env.str('POSTGRES_PASSWORD'),
+        'PORT': env.str('POSTGRES_PORT'),
+        'HOST': env.str('POSTGRES_HOST'),
+    }
+}
+
 # Email configuration
 
 EMAIL_USE_TLS = True
