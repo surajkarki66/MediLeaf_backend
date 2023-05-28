@@ -104,7 +104,8 @@ if DEBUG:
         'HOST': env.str('POSTGRES_HOST'),
     }
 }
-
+print(DEBUG)
+print(DATABASES)
 # Email configuration
 
 EMAIL_USE_TLS = True
