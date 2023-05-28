@@ -35,7 +35,7 @@ DEFAULT_APPS = [
 # These are the third party apps that we are using in our project.
 THIRD_PARTY_APPS = ['django_countries', 'rest_framework',
                     'drf_spectacular', 'drf_spectacular_sidecar', 'django_ckeditor_5', 'cloudinary_storage',
-                    'cloudinary',]
+                    'cloudinary', 'corsheaders']
 
 # These are the custom apps that we created to complete requirements of our project.
 CUSTOM_APPS = ['account', 'userprofile', 'utilities', 'plant']
@@ -51,6 +51,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
 ]
 
 ROOT_URLCONF = 'MediLeaf_backend.urls'
@@ -84,11 +86,11 @@ AUTH_USER_MODEL = 'account.User'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env.str('DATABASE_NAME'),
-        'USER': env.str('DATABASE_USER'),
-        'PASSWORD': env.str('DATABASE_PASSWORD'),
+        'NAME': env.str('POSTGRES_DATABASE'),
+        'USER': env.str('POSTGRES_USER'),
+        'PASSWORD': env.str('POSTGRES_PASSWORD'),
         'PORT': env.str('DATABASE_PORT'),
-        'HOST': env.str('DATABASE_HOST'),
+        'HOST': env.str('POSTGRES_HOST'),
     }
 }
 
@@ -139,9 +141,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
+if DEBUG:
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+else:
+    STATIC_ROOT = BASE_DIR / "staticfiles_build" / "static"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -341,3 +345,8 @@ CLOUDINARY_STORAGE = {
     'PREFIX': MEDIA_URL
 }
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# Cors settings
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
