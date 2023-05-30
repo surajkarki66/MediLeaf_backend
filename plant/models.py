@@ -166,8 +166,7 @@ class Plant(TimeStamp):
     growth_habit = models.CharField(max_length=10, choices=Growth)
     wikipedia_link = models.CharField(
         'wikipedia_link', max_length=500, null=True, blank=True, default=None, validators=[validate_link])
-    other_resources_links = ArrayField(models.CharField(
-        unique=True, validators=[validate_link]), size=5, unique=True, null=True, blank=True, validators=[validate_array_length])
+    other_resources_links = ArrayField(models.CharField(validators=[validate_link]), size=5, null=True, blank=True, validators=[validate_array_length])
     no_of_observations = models.PositiveIntegerField(default=0, editable=False)
     family = models.ForeignKey(
         PlantFamily, related_name='plants', on_delete=models.PROTECT)
