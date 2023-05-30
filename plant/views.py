@@ -10,7 +10,7 @@ from .serializers import PlantSpeciesSerializer
 class PlantSpeciesViewset(viewsets.ModelViewSet):
     queryset = PlantSpecies.objects.all()
     serializer_class = PlantSpeciesSerializer
-    permission_classes = (permissions.AllowAny, )
+    permission_classes = (permissions.IsAdminUser, )
     lookup_field = 'slug'
     filter_backends = [
         DjangoFilterBackend,
@@ -21,10 +21,8 @@ class PlantSpeciesViewset(viewsets.ModelViewSet):
         "id": ["exact"],
         "created_at": ["gte", "lte", "exact", "gt", "lt"],
         "updated_at": ["gte", "lte", "exact", "gt", "lt"],
-        "title": ["in", "exact"],
-        "genus": ["exact",]
     }
-    search_fields = ["id", "title", "genus"]
+    search_fields = ["id", "title", "genus__title"]
     ordering_fields = ["id", "title", "created_at", "updated_at", "genus"]
 
     def get_serializer_context(self):
@@ -38,13 +36,11 @@ class PlantSpeciesViewset(viewsets.ModelViewSet):
         }
 
     def get_permissions(self):
-        """
-        If the action is create, then return the permissions IsAuthenticated() and IsVerifiedUser(),
-        otherwise return the default permissions
-        :return: The permissions for the view.
-        """
-        if self.action == "create":
-            return [permissions.IsAdminUser(),]
+        if self.action in ["create",]:
+            return [permissions.IsAuthenticated(),]
+
+        if self.action in ["list", "retrieve"]:
+            return [permissions.AllowAny(),]
 
         return super().get_permissions()
 

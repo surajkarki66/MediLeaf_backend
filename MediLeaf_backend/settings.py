@@ -14,7 +14,7 @@ environ.Env.read_env(BASE_DIR / '.env')
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = env('ALLOWED_HOSTS').split(',')
 
@@ -33,7 +33,7 @@ DEFAULT_APPS = [
 ]
 
 # These are the third party apps that we are using in our project.
-THIRD_PARTY_APPS = ['django_countries', 'rest_framework',
+THIRD_PARTY_APPS = ['django_countries', 'rest_framework', 'django_filters',
                     'drf_spectacular', 'drf_spectacular_sidecar', 'django_ckeditor_5', 'cloudinary_storage',
                     'cloudinary', 'corsheaders']
 
