@@ -67,6 +67,11 @@ class PlantFamily(TimeStamp):
             self, self._state.adding, slugify(self.title))
         super(PlantFamily, self).save(*args, **kwargs)
 
+    @property
+    def no_of_genera(self):
+        return self.plants.all().count()
+
+
 
 class PlantGenus(TimeStamp):
     title = models.CharField('title', max_length=100, unique=True)
@@ -93,6 +98,10 @@ class PlantGenus(TimeStamp):
         self.slug = unique_update_slugify(
             self, self._state.adding, slugify(self.title))
         super(PlantGenus, self).save(*args, **kwargs)
+
+    @property
+    def no_of_species(self):
+        return self.genus.all().count()
 
 
 class PlantSpecies(TimeStamp):
