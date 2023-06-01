@@ -1,6 +1,6 @@
 from django.urls import include, path
 
-from .views import SignUpAPIView, LoginAPIView, LogoutAPIView, PasswordChangeAPIView, me, ForgotPasswordAPIView, ResetPasswordTokenCheckAPIView, VerifyAccountAPIView, ResendVerificationAPIView, UserUpdateAPIView
+from .views import SignUpAPIView, LoginAPIView, LogoutAPIView, PasswordChangeAPIView, me, ForgotPasswordAPIView, ResetPasswordTokenCheckAPIView, VerifyAccountAPIView, ResendVerificationAPIView, UserUpdateAPIView, get_csrf
 
 
 urlpatterns = [
@@ -20,5 +20,6 @@ urlpatterns = [
          ResetPasswordTokenCheckAPIView.as_view(), name='reset-password-api'),
     path('user-update/<int:pk>/',
          UserUpdateAPIView.as_view(), name='user-update-api'),
+    path('csrf/', get_csrf, name='csrf-api'),
 
 ]

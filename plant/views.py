@@ -1,11 +1,13 @@
 from rest_framework import permissions, viewsets, filters
 from drf_spectacular.utils import extend_schema
 from django_filters.rest_framework import DjangoFilterBackend
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_protect
 
 from .models import PlantSpecies, PlantGenus, PlantFamily
 from .serializers import PlantSpeciesSerializer, PlantGenusSerializer, PlantGenusListSerializer, PlantFamilyListSerializer, PlantFamilySerializer
 
-
+@method_decorator(csrf_protect, name='dispatch')
 @extend_schema(summary='Plant Species Viewset', tags=['Plant Species'])
 class PlantSpeciesViewset(viewsets.ModelViewSet):
     queryset = PlantSpecies.objects.all()
@@ -45,6 +47,7 @@ class PlantSpeciesViewset(viewsets.ModelViewSet):
 
         return super().get_permissions()
 
+@method_decorator(csrf_protect, name='dispatch')
 @extend_schema(summary='Plant Genus Viewset', tags=['Plant Genus'])
 class PlantGenusViewset(viewsets.ModelViewSet):
     queryset = PlantGenus.objects.all()
@@ -90,7 +93,8 @@ class PlantGenusViewset(viewsets.ModelViewSet):
 
         return super().get_serializer_class()
             
-
+            
+@method_decorator(csrf_protect, name='dispatch')
 @extend_schema(summary='Plant Family Viewset', tags=['Plant Family'])
 class PlantFamilyViewset(viewsets.ModelViewSet):
     queryset = PlantFamily.objects.all()

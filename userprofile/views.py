@@ -2,11 +2,14 @@ from rest_framework import permissions, status, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_protect
 
 from .models import Profile
 from account.permissions import IsOwner, IsVerifiedUser
 from .serializers import ProfileUpdateSerializer, UserProfileSerializer
 
+@method_decorator(csrf_protect, name='dispatch')
 @extend_schema(summary='User profile View set', tags=['Profile'])
 class ProfileViewSet(viewsets.ModelViewSet):
     '''This class is a viewset that allows you to create and update a user's profile'''

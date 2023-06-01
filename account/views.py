@@ -1,7 +1,10 @@
 import os
 
 from datetime import datetime
-
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_protect
+from django.http import JsonResponse
+from django.middleware.csrf import get_token
 from rest_framework.views import APIView
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
@@ -30,7 +33,13 @@ from MediLeaf_backend.email_thread import EmailThread
 User = get_user_model()
 tz = get_current_timezone()
 
+@extend_schema(summary='Get CSRF Token', tags=['CSRF'])
+def get_csrf(request):
+    response = JsonResponse({"Info": "Success - Set CSRF cookie"})
+    response["X-CSRFToken"] = get_token(request)
+    return response
 
+@method_decorator(csrf_protect, name='dispatch')
 @extend_schema(summary='User signup', tags=['Account'])
 class SignUpAPIView(generics.CreateAPIView):
     serializer_class = SignUpSerializer
@@ -107,7 +116,7 @@ class SignUpAPIView(generics.CreateAPIView):
             'message': "We have sent a verification link to your email address. Please verify your account."
         }, status=status.HTTP_201_CREATED)
 
-
+@method_decorator(csrf_protect, name='dispatch')
 class LoginAPIView(APIView):
     serializer_class = LoginSerializer
     permission_classes = (permissions.AllowAny,)
@@ -135,6 +144,7 @@ class LoginAPIView(APIView):
         }, status=status.HTTP_200_OK)
 
 
+@method_decorator(csrf_protect, name='dispatch')
 class LogoutAPIView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
@@ -152,6 +162,7 @@ class LogoutAPIView(APIView):
         }, status=status.HTTP_200_OK)
 
 
+@method_decorator(csrf_protect, name='dispatch')
 @extend_schema(summary="User password change", tags=["Account"])
 class PasswordChangeAPIView(generics.CreateAPIView):
     serializer_class = PasswordChangeSerializer
@@ -210,6 +221,7 @@ def me(request):
         return Response('not logged in', status.HTTP_401_UNAUTHORIZED)
 
 
+@method_decorator(csrf_protect, name='dispatch')
 @extend_schema(summary="Forgot password", tags=["Account"])
 class ForgotPasswordAPIView(APIView):
     serializer_class = ForgotPasswordSerializer
@@ -287,6 +299,7 @@ class ForgotPasswordAPIView(APIView):
         }, status=status.HTTP_201_CREATED)
 
 
+@method_decorator(csrf_protect, name='dispatch')
 class ResetPasswordTokenCheckAPIView(APIView):
     serializer_class = ResetPasswordSerializer
     permission_classes = (permissions.AllowAny,)
@@ -454,6 +467,7 @@ class VerifyAccountAPIView(APIView):
                 user.save()
         return Response(context, status=status.HTTP_200_OK)
 
+@method_decorator(csrf_protect, name='dispatch')
 @extend_schema(summary='Resend verification email', tags=['Account'])  
 class ResendVerificationAPIView(APIView):
     serializer_class = ResendVerificationEmailSerializer
@@ -538,6 +552,7 @@ class ResendVerificationAPIView(APIView):
             'message': 'We have sent verification link to your email. Please check your email address.'
         }, status=status.HTTP_201_CREATED)
 
+@method_decorator(csrf_protect, name='dispatch')
 @extend_schema(summary="User Update", tags=["Account"])
 class UserUpdateAPIView(generics.UpdateAPIView):
     queryset = User.objects.all()
