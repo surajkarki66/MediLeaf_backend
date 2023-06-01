@@ -3,7 +3,7 @@ from drf_spectacular.utils import extend_schema
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import PlantSpecies, PlantGenus, PlantFamily
-from .serializers import PlantSpeciesSerializer, PlantGenusSerializer, PlantGenusListSerializer, PlantFamilyListSerializer
+from .serializers import PlantSpeciesSerializer, PlantGenusSerializer, PlantGenusListSerializer, PlantFamilyListSerializer, PlantFamilySerializer
 
 
 @extend_schema(summary='Plant Species Viewset', tags=['Plant Species'])
@@ -21,6 +21,7 @@ class PlantSpeciesViewset(viewsets.ModelViewSet):
         "id": ["exact"],
         "created_at": ["gte", "lte", "exact", "gt", "lt"],
         "updated_at": ["gte", "lte", "exact", "gt", "lt"],
+        "genus__title": ["exact"]
     }
     search_fields = ["id", "title", "genus__title"]
     ordering_fields = ["id", "title", "created_at", "updated_at",]
@@ -59,6 +60,7 @@ class PlantGenusViewset(viewsets.ModelViewSet):
         "id": ["exact"],
         "created_at": ["gte", "lte", "exact", "gt", "lt"],
         "updated_at": ["gte", "lte", "exact", "gt", "lt"],
+        "family__title": ["exact"]
     }
     search_fields = ["id", "title", "family__title"]
     ordering_fields = ["id", "title", "created_at", "updated_at",]
@@ -92,7 +94,7 @@ class PlantGenusViewset(viewsets.ModelViewSet):
 @extend_schema(summary='Plant Family Viewset', tags=['Plant Family'])
 class PlantFamilyViewset(viewsets.ModelViewSet):
     queryset = PlantFamily.objects.all()
-    serializer_class = PlantFamilyListSerializer
+    serializer_class = PlantFamilySerializer
     permission_classes = (permissions.IsAdminUser, )
     lookup_field = 'slug'
     filter_backends = [

@@ -68,7 +68,7 @@ class PlantFamily(TimeStamp):
         super(PlantFamily, self).save(*args, **kwargs)
 
     @property
-    def no_of_genera(self):
+    def no_of_plants(self):
         return self.plants.all().count()
 
 
