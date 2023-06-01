@@ -9,6 +9,7 @@ from .models import Profile
 from account.permissions import IsOwner, IsVerifiedUser
 from .serializers import ProfileUpdateSerializer, UserProfileSerializer
 
+
 @method_decorator(csrf_protect, name='dispatch')
 @extend_schema(summary='User profile View set', tags=['Profile'])
 class ProfileViewSet(viewsets.ModelViewSet):

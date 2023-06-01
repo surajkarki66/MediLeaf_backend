@@ -121,21 +121,25 @@ class PasswordChangeSerializer(serializers.Serializer):
         validate_password(attrs['new_password'], self.context['request'].user)
         return attrs
 
+
 class UserUpdateSerializer(CountryFieldMixin, serializers.ModelSerializer):
     country = CountryField(country_dict=True)
+
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'contact', 'country',)
 
+
 class ForgotPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField(allow_null=False)
+
     class Meta:
         fields = ('email', )
 
     def validate_email(self, value):
         """
         If the email does not exist in the database, raise a validation error
-        
+
         :param value: The value that is being validated
         :return: The value of the email address.
         """
@@ -145,16 +149,20 @@ class ForgotPasswordSerializer(serializers.Serializer):
             })
         return value
 
+
 class ResetPasswordSerializer(serializers.Serializer):
-    new_password = serializers.CharField(max_length=128, write_only=True, required=True, validators=[validate_password])
-    confirm_new_password = serializers.CharField(max_length=128, write_only=True, required=True)
+    new_password = serializers.CharField(
+        max_length=128, write_only=True, required=True, validators=[validate_password])
+    confirm_new_password = serializers.CharField(
+        max_length=128, write_only=True, required=True)
+
     class Meta:
         fields = ('new_password', 'confirm_new_password')
 
     def validate(self, attrs):
         """
         If the new password and the confirm new password fields don't match, raise a validation error
-        
+
         :param attrs: The validated data from the serializer
         :return: The attrs dictionary is being returned.
         """
@@ -165,15 +173,17 @@ class ResetPasswordSerializer(serializers.Serializer):
         validate_password(attrs['new_password'])
         return attrs
 
+
 class ResendVerificationEmailSerializer(serializers.Serializer):
     email = serializers.EmailField(allow_null=False)
+
     class Meta:
         fields = ['email']
 
     def validate_email(self, value):
         """
         If the email does not exist in the database, raise a validation error
-        
+
         :param value: The value that is being validated
         :return: The value of the email address.
         """

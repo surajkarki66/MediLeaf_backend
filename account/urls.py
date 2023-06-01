@@ -1,4 +1,4 @@
-from django.urls import include, path
+from django.urls import path
 
 from .views import SignUpAPIView, LoginAPIView, LogoutAPIView, PasswordChangeAPIView, me, ForgotPasswordAPIView, ResetPasswordTokenCheckAPIView, VerifyAccountAPIView, ResendVerificationAPIView, UserUpdateAPIView, get_csrf
 

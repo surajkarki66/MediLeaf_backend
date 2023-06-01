@@ -1,6 +1,7 @@
 from django.utils.deconstruct import deconstructible
 from django.core.exceptions import ValidationError
 
+
 @deconstructible
 class ImageValidator:
     messages = {
@@ -18,15 +19,16 @@ class ImageValidator:
             raise ValidationError(
                 self.messages['size'],
                 params={
-                    'size': float(self.size)/1024,
+                    'size': float(self.size) / 1024,
                     'value': value,
                 }
             )
-            
+
         width = value.image.width if hasattr(value, 'image') else value.width
-        height = value.image.height if hasattr(value, 'image') else value.height
-        if (self.width is not None and self.height is not None and
-                (width != self.width or height != self.height)):
+        height = value.image.height if hasattr(
+            value, 'image') else value.height
+        if (self.width is not None and self.height is not None
+                and (width != self.width or height != self.height)):
             raise ValidationError(
                 self.messages['dimensions'],
                 params={
@@ -38,8 +40,8 @@ class ImageValidator:
 
     def __eq__(self, other):
         return (
-            isinstance(other, self.__class__) and
-            self.size == other.size and
-            self.width == other.width and
-            self.height == other.height
+            isinstance(other, self.__class__)
+            and self.size == other.size
+            and self.width == other.width
+            and self.height == other.height
         )

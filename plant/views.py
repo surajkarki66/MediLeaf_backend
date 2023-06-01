@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_protect
 from .models import PlantSpecies, PlantGenus, PlantFamily
 from .serializers import PlantSpeciesSerializer, PlantGenusSerializer, PlantGenusListSerializer, PlantFamilyListSerializer, PlantFamilySerializer
 
+
 @method_decorator(csrf_protect, name='dispatch')
 @extend_schema(summary='Plant Species Viewset', tags=['Plant Species'])
 class PlantSpeciesViewset(viewsets.ModelViewSet):
@@ -46,6 +47,7 @@ class PlantSpeciesViewset(viewsets.ModelViewSet):
             return [permissions.AllowAny(),]
 
         return super().get_permissions()
+
 
 @method_decorator(csrf_protect, name='dispatch')
 @extend_schema(summary='Plant Genus Viewset', tags=['Plant Genus'])
@@ -92,8 +94,8 @@ class PlantGenusViewset(viewsets.ModelViewSet):
             return PlantGenusListSerializer
 
         return super().get_serializer_class()
-            
-            
+
+
 @method_decorator(csrf_protect, name='dispatch')
 @extend_schema(summary='Plant Family Viewset', tags=['Plant Family'])
 class PlantFamilyViewset(viewsets.ModelViewSet):
@@ -138,7 +140,3 @@ class PlantFamilyViewset(viewsets.ModelViewSet):
             return PlantFamilyListSerializer
 
         return super().get_serializer_class()
-            
-        
-
-

@@ -2,11 +2,13 @@ from django.contrib import admin
 
 from .models import Plant, PlantFamily, PlantGenus, PlantSpecies, PlantImage
 
+
 class PlantImageInline(admin.StackedInline):
     model = PlantImage
     extra = 0
     max_num = 5
     formset_required = True
+
 
 @admin.register(PlantSpecies)
 class PlantSpeciesAdmin(admin.ModelAdmin):

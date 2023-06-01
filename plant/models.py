@@ -12,7 +12,6 @@ from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
 from django.conf import settings
 
-
 from utilities.utils import unique_update_slugify
 from utilities.validators import ImageValidator
 
@@ -70,7 +69,6 @@ class PlantFamily(TimeStamp):
     @property
     def no_of_plants(self):
         return self.plants.all().count()
-
 
 
 class PlantGenus(TimeStamp):
@@ -175,7 +173,8 @@ class Plant(TimeStamp):
     growth_habit = models.CharField(max_length=10, choices=Growth)
     wikipedia_link = models.CharField(
         'wikipedia_link', max_length=500, null=True, blank=True, default=None, validators=[validate_link])
-    other_resources_links = ArrayField(models.CharField(validators=[validate_link]), size=5, null=True, blank=True, validators=[validate_array_length])
+    other_resources_links = ArrayField(models.CharField(validators=[
+                                       validate_link]), size=5, null=True, blank=True, validators=[validate_array_length])
     no_of_observations = models.PositiveIntegerField(default=0, editable=False)
     family = models.ForeignKey(
         PlantFamily, related_name='plants', on_delete=models.PROTECT)

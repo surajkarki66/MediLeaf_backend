@@ -4,6 +4,7 @@ from django.conf import settings
 
 from django.core.mail import EmailMessage
 
+
 class EmailThread(threading.Thread):
     def __init__(self, msg):
         self.msg = msg
