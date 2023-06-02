@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import PlantSpecies, PlantGenus, PlantFamily
+from .models import PlantSpecies, PlantGenus, PlantFamily, PlantImage, Plant
 
 
 class PlantSpeciesSerializer(serializers.ModelSerializer):
@@ -48,3 +48,13 @@ class PlantFamilySerializer(serializers.ModelSerializer):
         fields = ("id", "title", "slug", "genuses", "created_at", "updated_at")
         model = PlantFamily
         read_only_fields = ('id', 'created_at', 'updated_at', 'slug', )
+
+
+class PlantImageSerializer(serializers.ModelSerializer):
+    plant = serializers.StringRelatedField()
+
+    class Meta:
+        fields = ("id", "plant", "part", "image",
+                  "default", "created_at", "updated_at")
+        model = PlantImage
+        read_only_fields = ('id', 'created_at', 'updated_at', )

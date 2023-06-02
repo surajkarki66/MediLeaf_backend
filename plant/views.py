@@ -4,8 +4,12 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 
-from .models import PlantSpecies, PlantGenus, PlantFamily
-from .serializers import PlantSpeciesSerializer, PlantGenusSerializer, PlantGenusListSerializer, PlantFamilyListSerializer, PlantFamilySerializer
+from .models import PlantSpecies, PlantGenus, PlantFamily, PlantImage
+from account.permissions import IsVerifiedUser
+from .serializers import (PlantSpeciesSerializer, PlantGenusSerializer,
+                          PlantGenusListSerializer, PlantFamilyListSerializer,
+                          PlantFamilySerializer,
+                          PlantImageSerializer)
 
 
 @method_decorator(csrf_protect, name='dispatch')
@@ -41,7 +45,7 @@ class PlantSpeciesViewset(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ["create",]:
-            return [permissions.IsAuthenticated(),]
+            return [permissions.IsAuthenticated(), IsVerifiedUser()]
 
         if self.action in ["list", "retrieve"]:
             return [permissions.AllowAny(),]
@@ -82,7 +86,7 @@ class PlantGenusViewset(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ["create",]:
-            return [permissions.IsAuthenticated(),]
+            return [permissions.IsAuthenticated(), IsVerifiedUser()]
 
         if self.action in ["list", "retrieve"]:
             return [permissions.AllowAny(),]
@@ -128,7 +132,7 @@ class PlantFamilyViewset(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ["create",]:
-            return [permissions.IsAuthenticated(),]
+            return [permissions.IsAuthenticated(), IsVerifiedUser()]
 
         if self.action in ["list", "retrieve"]:
             return [permissions.AllowAny(),]
@@ -140,3 +144,41 @@ class PlantFamilyViewset(viewsets.ModelViewSet):
             return PlantFamilyListSerializer
 
         return super().get_serializer_class()
+
+
+@method_decorator(csrf_protect, name='dispatch')
+@extend_schema(summary='Plant Image Viewset', tags=['Plant Image'])
+class PlantImageViewset(viewsets.ModelViewSet):
+    queryset = PlantImage.objects.all()
+    serializer_class = PlantImageSerializer
+    permission_classes = (permissions.IsAdminUser, )
+    lookup_field = 'id'
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
+    filterset_fields = {
+        "id": ["exact"],
+        "created_at": ["gte", "lte", "exact", "gt", "lt"],
+        "updated_at": ["gte", "lte", "exact", "gt", "lt"],
+        "part": ["exact"],
+        "default": ["exact"]
+    }
+    ordering_fields = ["id", "created_at", "updated_at",]
+
+    def get_serializer_context(self):
+        """
+        Extra context provided to the serializer class.
+        """
+        return {
+            'request': self.request,
+            'format': self.format_kwarg,
+            'view': self
+        }
+
+    def get_permissions(self):
+        if self.action in ["list", "retrieve"]:
+            return [permissions.AllowAny(),]
+
+        return super().get_permissions()

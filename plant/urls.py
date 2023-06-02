@@ -10,7 +10,8 @@ router.register(r'plants/plant-species',
 router.register(r'plants/plant-genus', views.PlantGenusViewset, 'plant-genus')
 router.register(r'plants/plant-family',
                 views.PlantFamilyViewset, 'plant-family')
-
+router.register(r'plants/plant-images',
+                views.PlantImageViewset, 'plant-images')
 
 app = 'plant'
 
