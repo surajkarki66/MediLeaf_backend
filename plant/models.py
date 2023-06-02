@@ -12,7 +12,6 @@ from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
 from django.conf import settings
 
-
 from utilities.utils import unique_update_slugify
 from utilities.validators import ImageValidator
 
@@ -67,6 +66,10 @@ class PlantFamily(TimeStamp):
             self, self._state.adding, slugify(self.title))
         super(PlantFamily, self).save(*args, **kwargs)
 
+    @property
+    def no_of_plants(self):
+        return self.plants.all().count()
+
 
 class PlantGenus(TimeStamp):
     title = models.CharField('title', max_length=100, unique=True)
@@ -93,6 +96,10 @@ class PlantGenus(TimeStamp):
         self.slug = unique_update_slugify(
             self, self._state.adding, slugify(self.title))
         super(PlantGenus, self).save(*args, **kwargs)
+
+    @property
+    def no_of_species(self):
+        return self.genus.all().count()
 
 
 class PlantSpecies(TimeStamp):
@@ -166,7 +173,8 @@ class Plant(TimeStamp):
     growth_habit = models.CharField(max_length=10, choices=Growth)
     wikipedia_link = models.CharField(
         'wikipedia_link', max_length=500, null=True, blank=True, default=None, validators=[validate_link])
-    other_resources_links = ArrayField(models.CharField(validators=[validate_link]), size=5, null=True, blank=True, validators=[validate_array_length])
+    other_resources_links = ArrayField(models.CharField(validators=[
+                                       validate_link]), size=5, null=True, blank=True, validators=[validate_array_length])
     no_of_observations = models.PositiveIntegerField(default=0, editable=False)
     family = models.ForeignKey(
         PlantFamily, related_name='plants', on_delete=models.PROTECT)
@@ -184,13 +192,13 @@ class Plant(TimeStamp):
         if self.species is not None:
             return f'{self.genus} {self.species}'.strip()
         else:
-            return self.genus
+            return f'{self.genus}'
 
     def __str__(self):
         if self.species is not None:
             return f'{self.genus} {self.species}'.strip()
         else:
-            return self.genus
+            return f'{self.genus}'
 
     def default_image_tag(self):
         default_image = self.images.get(default=True)

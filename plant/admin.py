@@ -74,7 +74,7 @@ class PlantImageAdmin(admin.ModelAdmin):
         if obj.species is not None:
             return f'{obj.genus} {obj.species}'.strip()
         else:
-            return obj.genus
+            return f'{obj.genus}'
 
 
 @admin.register(Plant)
@@ -94,6 +94,6 @@ class PlantAdmin(admin.ModelAdmin):
         if obj.species is not None:
             return f'{obj.genus} {obj.species}'.strip()
         else:
-            return obj.genus
+            return f'{obj.genus}'
 
     inlines = (PlantImageInline,)

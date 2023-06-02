@@ -14,7 +14,7 @@ environ.Env.read_env(BASE_DIR / '.env')
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = env('ALLOWED_HOSTS').split(',')
 
@@ -33,7 +33,7 @@ DEFAULT_APPS = [
 ]
 
 # These are the third party apps that we are using in our project.
-THIRD_PARTY_APPS = ['django_countries', 'rest_framework',
+THIRD_PARTY_APPS = ['django_countries', 'rest_framework', 'django_filters',
                     'drf_spectacular', 'drf_spectacular_sidecar', 'django_ckeditor_5', 'cloudinary_storage',
                     'cloudinary', 'corsheaders']
 
@@ -44,6 +44,7 @@ CUSTOM_APPS = ['account', 'userprofile', 'utilities', 'plant']
 INSTALLED_APPS = DEFAULT_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -51,7 +52,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
 ]
 
@@ -140,7 +140,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build','static',)
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static',)
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -348,3 +348,12 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ]
+CORS_EXPOSE_HEADERS = ["Content-Type", "X-CSRFToken"]
+CORS_ALLOW_CREDENTIALS = True
+
+# Cookie and Session settings
+CSRF_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_SAMESITE = "Lax"
+
+CSRF_COOKIE_HTTPONLY = True
+SESSION_COOKIE_HTTPONLY = True
