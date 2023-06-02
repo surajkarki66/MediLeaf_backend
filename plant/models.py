@@ -192,13 +192,13 @@ class Plant(TimeStamp):
         if self.species is not None:
             return f'{self.genus} {self.species}'.strip()
         else:
-            return self.genus
+            return f'{self.genus}'
 
     def __str__(self):
         if self.species is not None:
             return f'{self.genus} {self.species}'.strip()
         else:
-            return self.genus
+            return f'{self.genus}'
 
     def default_image_tag(self):
         default_image = self.images.get(default=True)
