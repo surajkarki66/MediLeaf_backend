@@ -71,7 +71,10 @@ class PlantImageAdmin(admin.ModelAdmin):
 
     @admin.display(description='Scientific Name')
     def scientific_name(self, obj):
-        return f'{obj.plant.genus} {obj.plant.species}'.strip()
+        if obj.species is not None:
+            return f'{obj.genus} {obj.species}'.strip()
+        else:
+            return obj.genus
 
 
 @admin.register(Plant)
@@ -88,6 +91,9 @@ class PlantAdmin(admin.ModelAdmin):
 
     @admin.display(description='Scientific Name')
     def scientific_name(self, obj):
-        return f'{obj.genus} {obj.species}'.strip()
+        if obj.species is not None:
+            return f'{obj.genus} {obj.species}'.strip()
+        else:
+            return obj.genus
 
     inlines = (PlantImageInline,)

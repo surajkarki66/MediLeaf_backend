@@ -189,10 +189,16 @@ class Plant(TimeStamp):
         ordering = ('-id',)
 
     def get_scientific_name(self):
-        return f'{self.genus} {self.species}'.strip()
+        if self.species is not None:
+            return f'{self.genus} {self.species}'.strip()
+        else:
+            return self.genus
 
     def __str__(self):
-        return f'{self.genus} {self.species}'.strip()
+        if self.species is not None:
+            return f'{self.genus} {self.species}'.strip()
+        else:
+            return self.genus
 
     def default_image_tag(self):
         default_image = self.images.get(default=True)
