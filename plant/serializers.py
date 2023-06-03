@@ -67,8 +67,22 @@ class PlantListSerializer(serializers.ModelSerializer):
     images = PlantImageSerializer(read_only=True, many=True)
 
     class Meta:
-        fields = ("id", "common_name", "common_name_ne", "family",
+        fields = ("id", "common_names", "common_names_ne", "family",
                   "genus", "species", "images", "created_at", "updated_at")
         model = Plant
-        read_only_fields = ("id", "common_name", "common_name_ne", "family",
+        read_only_fields = ("id", "common_names", "common_names_ne", "family",
                             "genus", "species", "images", "created_at", "updated_at")
+
+
+class PlantDetailsSerializer(serializers.ModelSerializer):
+    family = serializers.StringRelatedField(read_only=True)
+    genus = serializers.StringRelatedField(read_only=True)
+    species = serializers.StringRelatedField(read_only=True)
+    images = PlantImageSerializer(read_only=True, many=True)
+
+    class Meta:
+        fields = ("id", "common_names", "common_names_ne", "description", "description_ne", "medicinal_properties",
+                  "medicinal_properties_ne", "duration", "growth_habit", "wikipedia_link",
+                  "other_resources_links", "no_of_observations", "family", "genus",
+                  "species", "images", "created_at", "updated_at")
+        model = Plant
