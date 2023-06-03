@@ -59,7 +59,7 @@ class PlantImageAdmin(admin.ModelAdmin):
     list_display_links = ('id', 'scientific_name')
     list_filter = ('created_at', 'updated_at', 'part',
                    'plant__duration', 'plant__growth_habit')
-    search_fields = ('plant__common_name', 'plant__common_name_ne',)
+    search_fields = ('plant__common_names', 'plant__common_names_ne',)
     readonly_fields = ('created_at', 'updated_at',)
 
     @admin.display(description='Default Status')
@@ -82,10 +82,10 @@ class PlantAdmin(admin.ModelAdmin):
     list_per_page = 10
     date_hierarchy = 'created_at'
     list_display = ('id', 'family', 'scientific_name',
-                    'common_name', 'common_name_ne', 'duration', 'growth_habit', 'default_image_tag')
+                    'common_names', 'common_names_ne', 'duration', 'growth_habit', 'default_image_tag')
     list_display_links = ('id', 'family',)
     list_filter = ('duration', 'growth_habit')
-    search_fields = ('common_name', 'common_name_ne', 'description',
+    search_fields = ('common_names', 'common_names_ne', 'description',
                      'description_ne', 'medicinal_properties', 'medicinal_properties_ne', 'family__title', 'genus__title', 'species__title')
     readonly_fields = ('created_at', 'updated_at', 'no_of_observations')
 
