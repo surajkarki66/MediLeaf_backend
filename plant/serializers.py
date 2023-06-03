@@ -58,3 +58,17 @@ class PlantImageSerializer(serializers.ModelSerializer):
                   "default", "created_at", "updated_at")
         model = PlantImage
         read_only_fields = ('id', 'created_at', 'updated_at', )
+
+
+class PlantListSerializer(serializers.ModelSerializer):
+    family = serializers.StringRelatedField(read_only=True)
+    genus = serializers.StringRelatedField(read_only=True)
+    species = serializers.StringRelatedField(read_only=True)
+    images = PlantImageSerializer(read_only=True, many=True)
+
+    class Meta:
+        fields = ("id", "common_name", "common_name_ne", "family",
+                  "genus", "species", "images", "created_at", "updated_at")
+        model = Plant
+        read_only_fields = ("id", "common_name", "common_name_ne", "family",
+                            "genus", "species", "images", "created_at", "updated_at")
