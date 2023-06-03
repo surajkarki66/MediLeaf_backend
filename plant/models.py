@@ -189,7 +189,7 @@ class Plant(TimeStamp):
         ordering = ('-id',)
 
     def get_scientific_name(self):
-        if self.species is not None:
+        if hasattr(self, "species"):
             return f'{self.genus} {self.species}'.strip()
         else:
             return f'{self.genus}'
