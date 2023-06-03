@@ -71,7 +71,7 @@ class PlantImageAdmin(admin.ModelAdmin):
 
     @admin.display(description='Scientific Name')
     def scientific_name(self, obj):
-        if hasattr(obj, "plant"):
+        if obj.plant.species is not None:
             return f'{obj.plant.genus} {obj.plant.species}'.strip()
         else:
             return f'{obj.plant.genus}'
@@ -91,7 +91,7 @@ class PlantAdmin(admin.ModelAdmin):
 
     @admin.display(description='Scientific Name')
     def scientific_name(self, obj):
-        if hasattr(obj, "species"):
+        if obj.species is not None:
             return f'{obj.genus} {obj.species}'.strip()
         else:
             return f'{obj.genus}'
