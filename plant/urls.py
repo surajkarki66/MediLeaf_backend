@@ -5,6 +5,7 @@ from plant import views
 
 router = DefaultRouter()
 
+router.register(r'plants', views.PlantViewset, 'plant')
 router.register(r'plants/plant-species',
                 views.PlantSpeciesViewset, 'plant-species')
 router.register(r'plants/plant-genus', views.PlantGenusViewset, 'plant-genus')

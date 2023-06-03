@@ -4,12 +4,13 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 
-from .models import PlantSpecies, PlantGenus, PlantFamily, PlantImage
+from .filters import PlantFilter
+from .models import PlantSpecies, PlantGenus, PlantFamily, PlantImage, Plant
 from account.permissions import IsVerifiedUser
 from .serializers import (PlantSpeciesSerializer, PlantGenusSerializer,
                           PlantGenusListSerializer, PlantFamilyListSerializer,
-                          PlantFamilySerializer,
-                          PlantImageSerializer)
+                          PlantFamilySerializer, PlantImageSerializer, PlantListSerializer,
+                          PlantDetailsSerializer)
 
 
 @method_decorator(csrf_protect, name='dispatch')
@@ -182,3 +183,25 @@ class PlantImageViewset(viewsets.ModelViewSet):
             return [permissions.AllowAny(),]
 
         return super().get_permissions()
+
+
+@extend_schema(summary='Plant List View', tags=['Plant List'])
+class PlantViewset(viewsets.ReadOnlyModelViewSet):
+    queryset = Plant.objects.all()
+    serializer_class = PlantListSerializer
+    permission_classes = (permissions.AllowAny, )
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter,
+                       filters.OrderingFilter,]
+
+    search_fields = ["id", "family__title",
+                     "common_names", "genus__title", "species__title"]
+    ordering_fields = ["id", "common_names", "family__title",
+                       "genus__title", "species__title", "created_at", "updated_at",]
+
+    filterset_class = PlantFilter
+
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return PlantDetailsSerializer
+
+        return super().get_serializer_class()

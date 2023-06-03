@@ -161,9 +161,9 @@ class Plant(TimeStamp):
         (Vine, 'Vine')
     )
 
-    common_name = ArrayField(models.CharField(
+    common_names = ArrayField(models.CharField(
         max_length=255, unique=True), size=5, unique=True, validators=[validate_array_length])
-    common_name_ne = ArrayField(models.CharField(
+    common_names_ne = ArrayField(models.CharField(
         max_length=255, unique=True), size=5, unique=True, validators=[validate_array_length])
     description = CKEditor5Field()
     description_ne = CKEditor5Field()
