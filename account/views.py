@@ -224,12 +224,12 @@ def me(request):
         try:
             avatar = "https://res.cloudinary.com/deek0shwx/image/upload/v1/" + \
                 str(request.user.profile.avatar)
-            return Response({"fullName": request.user.get_fullname(), "avatar": avatar}, status.HTTP_200_OK)
+            return Response({"status": "success", fullName": request.user.get_fullname(), "avatar": avatar}, status.HTTP_200_OK)
         except ObjectDoesNotExist:
-            return Response({"fullName": request.user.get_fullname()}, status.HTTP_200_OK)
+            return Response({"status": "success", "fullName": request.user.get_fullname()}, status.HTTP_200_OK)
 
     else:
-        return Response('not logged in', status.HTTP_401_UNAUTHORIZED)
+        return Response({"status": "fail"}, status.HTTP_401_UNAUTHORIZED)
 
 
 @method_decorator(csrf_protect, name='dispatch')
