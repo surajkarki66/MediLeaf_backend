@@ -35,8 +35,8 @@ tz = get_current_timezone()
 
 @extend_schema(summary='Get CSRF Token', tags=['CSRF'])
 def get_csrf(request):
-    response = JsonResponse({"Info": "Success - Set CSRF cookie"})
-    response["X-CSRFToken"] = get_token(request)
+    csrf_token = get_token(request)
+    response = JsonResponse({"csrfToken": csrf_token})
     return response
 
 @method_decorator(csrf_protect, name='dispatch')
