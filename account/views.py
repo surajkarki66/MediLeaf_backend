@@ -23,6 +23,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.template.loader import get_template
 from drf_spectacular.utils import extend_schema
+from django.core.exceptions import ObjectDoesNotExist
 
 from .permissions import IsOwnerOrReadOnly, IsVerifiedUser
 from .serializers import SignUpSerializer, LoginSerializer, PasswordChangeSerializer, UserUpdateSerializer, ForgotPasswordSerializer, ResetPasswordSerializer, ResendVerificationEmailSerializer
@@ -33,11 +34,13 @@ from MediLeaf_backend.email_thread import EmailThread
 User = get_user_model()
 tz = get_current_timezone()
 
+
 @extend_schema(summary='Get CSRF Token', tags=['CSRF'])
 def get_csrf(request):
     csrf_token = get_token(request)
     response = JsonResponse({"csrfToken": csrf_token})
     return response
+
 
 @method_decorator(csrf_protect, name='dispatch')
 @extend_schema(summary='User signup', tags=['Account'])
@@ -115,6 +118,7 @@ class SignUpAPIView(generics.CreateAPIView):
         return Response({
             'message': "We have sent a verification link to your email address. Please verify your account."
         }, status=status.HTTP_201_CREATED)
+
 
 @method_decorator(csrf_protect, name='dispatch')
 class LoginAPIView(APIView):
@@ -215,8 +219,15 @@ def me(request):
     Notes:
     - This view requires authentication to access the user information.
     """
+
     if request.user.is_authenticated:
-        return Response(request.user.get_fullname(), status.HTTP_200_OK)
+        try:
+            avatar = "https://res.cloudinary.com/deek0shwx/image/upload/v1/" + \
+                str(request.user.profile.avatar)
+            return Response({"fullName": request.user.get_fullname(), "avatar": avatar}, status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return Response({"fullName": request.user.get_fullname()}, status.HTTP_200_OK)
+
     else:
         return Response('not logged in', status.HTTP_401_UNAUTHORIZED)
 
@@ -421,7 +432,6 @@ class ResetPasswordTokenCheckAPIView(APIView):
 class VerifyAccountAPIView(APIView):
     permission_classes = (permissions.AllowAny, )
 
-
     @extend_schema(summary="User account verify", tags=["Account"])
     def get(self, request, uid, token, *args, **kwargs):
         """
@@ -467,8 +477,9 @@ class VerifyAccountAPIView(APIView):
                 user.save()
         return Response(context, status=status.HTTP_200_OK)
 
+
 @method_decorator(csrf_protect, name='dispatch')
-@extend_schema(summary='Resend verification email', tags=['Account'])  
+@extend_schema(summary='Resend verification email', tags=['Account'])
 class ResendVerificationAPIView(APIView):
     serializer_class = ResendVerificationEmailSerializer
     permission_classes = (permissions.AllowAny,)
@@ -552,13 +563,14 @@ class ResendVerificationAPIView(APIView):
             'message': 'We have sent verification link to your email. Please check your email address.'
         }, status=status.HTTP_201_CREATED)
 
+
 @method_decorator(csrf_protect, name='dispatch')
 @extend_schema(summary="User Update", tags=["Account"])
 class UserUpdateAPIView(generics.UpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserUpdateSerializer
     permission_classes = (permissions.IsAuthenticated,
-                        IsOwnerOrReadOnly, IsVerifiedUser,)
+                          IsOwnerOrReadOnly, IsVerifiedUser,)
     lookup_field = 'pk'
 
     def update(self, request, *args, **kwargs):
@@ -582,16 +594,17 @@ class UserUpdateAPIView(generics.UpdateAPIView):
             raise ParseError({
                 'message': serializer.errors
             }, status.HTTP_400_BAD_REQUEST)
-        
+
         if hasattr(user, 'profile'):
             profile_instance = user.profile
-            profile_serializer = ProfileUpdateSerializer(profile_instance, data=request.data, partial=partial)  
+            profile_serializer = ProfileUpdateSerializer(
+                profile_instance, data=request.data, partial=partial)
         else:
             data = request.data
             if hasattr(data, '_mutable'):
                 data._mutable = True
 
-            data['user']=instance.id
+            data['user'] = instance.id
             profile_serializer = ProfileUpdateSerializer(data=data)
 
         if profile_serializer.is_valid():
