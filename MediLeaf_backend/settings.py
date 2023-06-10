@@ -33,9 +33,9 @@ DEFAULT_APPS = [
 ]
 
 # These are the third party apps that we are using in our project.
-THIRD_PARTY_APPS = ['django_countries', 'rest_framework', 'django_filters',
+THIRD_PARTY_APPS = ['django_countries', 'corsheaders', 'rest_framework', 'django_filters',
                     'drf_spectacular', 'drf_spectacular_sidecar', 'django_ckeditor_5', 'cloudinary_storage',
-                    'cloudinary', 'corsheaders']
+                    'cloudinary']
 
 # These are the custom apps that we created to complete requirements of our project.
 CUSTOM_APPS = ['account', 'userprofile', 'utilities', 'plant']
@@ -347,8 +347,9 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 # Cors settings
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "http://0.0.0.0:3000"
 ]
-CORS_EXPOSE_HEADERS = ["Content-Type", "X-CSRFToken"]
+CORS_EXPOSE_HEADERS = ["Content-Type", "X-CSRF-Token"]
 CORS_ALLOW_CREDENTIALS = True
 
 # Cookie and Session settings
