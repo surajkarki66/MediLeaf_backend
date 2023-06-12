@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from .models import PlantSpecies, PlantGenus, PlantFamily, PlantImage, Plant
+from utilities.utils import image_to_array
 
 
 class PlantSpeciesSerializer(serializers.ModelSerializer):
@@ -86,3 +87,15 @@ class PlantDetailsSerializer(serializers.ModelSerializer):
                   "other_resources_links", "no_of_observations", "family", "genus",
                   "species", "images", "created_at", "updated_at")
         model = Plant
+
+
+class PlantPredictionSerializer(serializers.Serializer):
+    image_file = serializers.ImageField(required=True)
+
+    def to_representation(self, instance):
+        image_array = image_to_array(instance)
+        return image_array.tolist()
+
+    def validate_image_file(self, value):
+        # TODO: image must have 3 channels(rgb)
+        return value
