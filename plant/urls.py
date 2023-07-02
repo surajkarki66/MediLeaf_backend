@@ -18,6 +18,4 @@ app = 'plant'
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('predict/', views.PlantPredictionView.as_view(),
-         name='plant-prediction')
 ]

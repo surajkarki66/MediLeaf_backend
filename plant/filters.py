@@ -61,9 +61,13 @@ class PlantFilter(django_filters.FilterSet):
     def filter_queryset(self, queryset):
         filters = Q()
 
-        genus = self.data.getlist('genus')
-        species = self.data.getlist('species')
-
+        genus = None
+        species = None
+        
+        if 'genus' in self.data and 'species' in self.data:
+            genus = self.data.getlist('genus')
+            species = self.data.getlist('species')
+     
         if genus:
             filters &= Q(genus__title__in=genus)
 
