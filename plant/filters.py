@@ -1,4 +1,5 @@
 import django_filters
+from django.db.models import Q
 
 from .models import Plant, PlantGenus, PlantSpecies
 
@@ -39,11 +40,13 @@ class PlantFilter(django_filters.FilterSet):
         field_name='genus__title',
         queryset=PlantGenus.objects.all(),
         to_field_name='title',
+        conjoined=False
     )
     species = django_filters.ModelMultipleChoiceFilter(
         field_name='species__title',
         queryset=PlantSpecies.objects.all(),
         to_field_name='title',
+        conjoined=False
     )
     id = django_filters.Filter(field_name="id", lookup_expr="exact")
     created_at = django_filters.DateTimeFilter(
@@ -54,6 +57,25 @@ class PlantFilter(django_filters.FilterSet):
         field_name="growth_habit", lookup_expr="exact", choices=Growth)
     duration = django_filters.ChoiceFilter(
         field_name="duration", lookup_expr="exact", choices=Duration)
+
+    def filter_queryset(self, queryset):
+        filters = Q()
+
+        genus = None
+        species = None
+        
+        if 'genus' in self.data and 'species' in self.data:
+            genus = self.data.getlist('genus')
+            species = self.data.getlist('species')
+     
+        if genus:
+            filters &= Q(genus__title__in=genus)
+
+        if species:
+            filters &= (Q(species__title__in=species)
+                        | Q(species__isnull=True))
+
+        return queryset.filter(filters)
 
     class Meta:
         model = Plant

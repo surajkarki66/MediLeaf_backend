@@ -1,9 +1,4 @@
-import requests
-import json
-
 from rest_framework import permissions, viewsets, filters
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema
 from django_filters.rest_framework import DjangoFilterBackend
 from django.utils.decorators import method_decorator
@@ -15,9 +10,8 @@ from account.permissions import IsVerifiedUser
 from .serializers import (PlantSpeciesSerializer, PlantGenusSerializer,
                           PlantGenusListSerializer, PlantFamilyListSerializer,
                           PlantFamilySerializer, PlantImageSerializer, PlantListSerializer,
-                          PlantDetailsSerializer, PlantPredictionSerializer)
+                          PlantDetailsSerializer)
 
-from utilities.utils import map_predictions_to_species_with_proba
 
 
 @method_decorator(csrf_protect, name='dispatch')
@@ -212,26 +206,3 @@ class PlantViewset(viewsets.ReadOnlyModelViewSet):
             return PlantDetailsSerializer
 
         return super().get_serializer_class()
-
-
-class PlantPredictionView(APIView):
-    serializer_class = PlantPredictionSerializer
-
-    def post(self, request, format=None):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        image = serializer.validated_data['image_file']
-        image_list = serializer.to_representation(image)
-
-        data = json.dumps({"instances": image_list})
-
-        url = 'http://localhost:8601/v1/models/vgg_model:predict'
-        response = requests.post(url, data=data)
-
-        predictions = json.loads(response.text)['predictions']
-
-        prediction_response = map_predictions_to_species_with_proba(
-            predictions)
-
-        return Response(prediction_response)
