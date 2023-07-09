@@ -1,3 +1,6 @@
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from rest_framework import permissions, viewsets, filters
 from drf_spectacular.utils import extend_schema
 from django_filters.rest_framework import DjangoFilterBackend
@@ -11,7 +14,6 @@ from .serializers import (PlantSpeciesSerializer, PlantGenusSerializer,
                           PlantGenusListSerializer, PlantFamilyListSerializer,
                           PlantFamilySerializer, PlantImageSerializer, PlantListSerializer,
                           PlantDetailsSerializer)
-
 
 
 @method_decorator(csrf_protect, name='dispatch')
@@ -206,3 +208,18 @@ class PlantViewset(viewsets.ReadOnlyModelViewSet):
             return PlantDetailsSerializer
 
         return super().get_serializer_class()
+
+
+class PlantDetailsAPIView(APIView):
+    permission_classes = (permissions.AllowAny, )
+
+    def get(self, request):
+        genus = request.GET.get('genus')
+        species = request.GET.get('species')
+        plant = Plant.objects.filter(
+            genus__title=genus, species__title=species).first()
+        if plant:
+            serializer = PlantDetailsSerializer(plant)
+            return Response(serializer.data)
+        else:
+            return Response({"message": "Plant not found"}, status=status.HTTP_404_NOT_FOUND)
