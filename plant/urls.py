@@ -18,4 +18,6 @@ app = 'plant'
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('plant/details/',
+         views.PlantDetailsAPIView.as_view(), name='plant-detail')
 ]
