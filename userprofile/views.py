@@ -44,18 +44,11 @@ class ProfileViewSet(viewsets.ModelViewSet):
 
 class UserProfileAPIView(APIView):
     serializer_class = UserProfileSerializer
-    permission_classes = (permissions.IsAuthenticated, IsVerifiedUser)
+    permission_classes = (permissions.IsAuthenticated,)
     http_method_names = ('get',)
 
     @extend_schema(summary="User all profile details", tags=["Profile"])
     def get(self, request):
-        """
-        If the user is not verified, raise an error. Otherwise, return the user's profile
-
-        :param request: The request object
-        :return: The serialized data of the user.
-        """
-
         serialized = UserProfileSerializer(
             request.user, context={"request": request})
         data = serialized.data
