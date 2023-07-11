@@ -42,7 +42,6 @@ def get_csrf(request):
     return response
 
 
-@method_decorator(csrf_protect, name='dispatch')
 @extend_schema(summary='User signup', tags=['Account'])
 class SignUpAPIView(generics.CreateAPIView):
     serializer_class = SignUpSerializer
@@ -120,7 +119,6 @@ class SignUpAPIView(generics.CreateAPIView):
         }, status=status.HTTP_201_CREATED)
 
 
-@method_decorator(csrf_protect, name='dispatch')
 class LoginAPIView(APIView):
     serializer_class = LoginSerializer
     permission_classes = (permissions.AllowAny,)
