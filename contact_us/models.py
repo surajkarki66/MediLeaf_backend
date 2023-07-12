@@ -10,7 +10,7 @@ class ContactUs(TimeStamp):
     email = models.EmailField('email address', unique=True)
     subject = models.CharField(
         'subject', max_length=255, null=True, blank=True, default=None)
-    description = CKEditor5Field()
+    message = CKEditor5Field()
    
     class Meta:
         verbose_name = 'ContactUs'

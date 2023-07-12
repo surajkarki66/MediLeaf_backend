@@ -9,7 +9,7 @@ class ContactUsAdmin(admin.ModelAdmin):
     list_display = ('id', 'full_name',
                     'email', 'subject')
     list_display_links = ('id', 'full_name', 'email',)
-    search_fields = ('first_name', 'last_name', 'description',
+    search_fields = ('first_name', 'last_name', 'message',
                      'email', 'subject',)
     readonly_fields = ('created_at', 'updated_at',)
 
