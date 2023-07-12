@@ -1,10 +1,5 @@
-import os
 
-from datetime import datetime
-from django.db.models.signals import post_delete
-from django.dispatch import receiver
 from django.contrib.auth import get_user_model
-from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.utils.safestring import mark_safe
