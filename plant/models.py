@@ -2,9 +2,7 @@ import re
 
 from django.db import models
 from utilities.models import TimeStamp
-from django.dispatch import receiver
 from django.contrib.postgres.fields import ArrayField
-from django.db.models.signals import post_delete, pre_save
 from django_ckeditor_5.fields import CKEditor5Field
 from django.template.defaultfilters import slugify
 from django.core.validators import URLValidator

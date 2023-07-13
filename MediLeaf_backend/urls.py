@@ -20,6 +20,7 @@ urlpatterns = [
     path('api/v1/', include('account.urls')),
     path('api/v1/', include('userprofile.urls')),
     path('api/v1/', include('plant.urls')),
+    path('api/v1/', include('contact_us.urls')),
 
 ]
 

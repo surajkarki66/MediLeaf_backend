@@ -38,7 +38,7 @@ THIRD_PARTY_APPS = ['django_countries', 'corsheaders', 'rest_framework', 'django
                     'cloudinary']
 
 # These are the custom apps that we created to complete requirements of our project.
-CUSTOM_APPS = ['account', 'userprofile', 'utilities', 'plant']
+CUSTOM_APPS = ['account', 'userprofile', 'utilities', 'plant', 'contact_us']
 
 # A list of all the apps that are installed in our project.
 INSTALLED_APPS = DEFAULT_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
