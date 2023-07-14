@@ -30,8 +30,8 @@ class FeedbackViewset(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter,
                        filters.OrderingFilter,]
 
-    search_fields = ["id", "family", "common_names", "genus", "species",]
-    ordering_fields = ["id", "common_names", "family", "genus", "species",
+    search_fields = ["id", "family", "common_name", "genus", "species",]
+    ordering_fields = ["id", "common_name", "family", "genus", "species",
                        "created_at", "updated_at",]
 
     filterset_fields = {

@@ -74,8 +74,7 @@ class Feedback(TimeStamp):
         (Vine, 'Vine')
     )
 
-    common_names = ArrayField(models.CharField(
-        max_length=255, unique=True), size=5, unique=True, validators=[validate_array_length])
+    common_name = models.CharField(max_length=255)
     description = CKEditor5Field()
     medicinal_properties = CKEditor5Field()
     duration = models.CharField(max_length=10, choices=Duration)

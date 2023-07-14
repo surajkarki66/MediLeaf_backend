@@ -9,12 +9,10 @@ class ContactUsSerializer(serializers.ModelSerializer):
 
 
 class FeedbackUpdateSerializer(serializers.ModelSerializer):
-    common_names = serializers.ListField(
-        child=serializers.CharField(), required=True)
-
+   
     class Meta:
         model = Feedback
-        fields = ("id", "common_names", "description", "medicinal_properties", "duration", "growth_habit", "family",
+        fields = ("id", "common_name", "description", "medicinal_properties", "duration", "growth_habit", "family",
                   "genus", "species", "image", "created_at", "updated_at")
 
 
@@ -29,8 +27,8 @@ class FeedbackListSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
 
     class Meta:
-        fields = ("id", "common_names", "family",
+        fields = ("id", "common_name", "family",
                   "genus", "species", "image", "user", "created_at", "updated_at")
         model = Feedback
-        read_only_fields = ("id", "common_names", "family", "genus",
+        read_only_fields = ("id", "common_name", "family", "genus",
                             "species", "image", "user", "created_at", "updated_at")
