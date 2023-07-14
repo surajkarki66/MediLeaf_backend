@@ -23,11 +23,11 @@ class ContactUsAdmin(admin.ModelAdmin):
 class FeedbackAdmin(admin.ModelAdmin):
     list_per_page = 10
     date_hierarchy = 'created_at'
-    list_display = ('id',  'scientific_name', 'common_names',
+    list_display = ('id',  'scientific_name', 'common_name',
                     'family', 'user', 'image_tag', 'verification_status', 'created_at')
     list_display_links = ('id', 'scientific_name',)
     list_filter = ('duration', 'growth_habit','is_verified')
-    search_fields = ('common_names', 'description',
+    search_fields = ('common_name', 'description',
                      'medicinal_properties', 'family', 'genus', 'species')
     readonly_fields = ('created_at', 'updated_at',)
 
