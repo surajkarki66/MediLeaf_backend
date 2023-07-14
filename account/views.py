@@ -562,7 +562,6 @@ class ResendVerificationAPIView(APIView):
         }, status=status.HTTP_201_CREATED)
 
 
-@method_decorator(csrf_protect, name='dispatch')
 @extend_schema(summary="User Update", tags=["Account"])
 class UserUpdateAPIView(generics.UpdateAPIView):
     queryset = User.objects.all()
