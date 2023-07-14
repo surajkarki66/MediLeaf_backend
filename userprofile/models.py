@@ -14,7 +14,7 @@ User = get_user_model()
 def get_upload_to(instance,  filename):
     user_id = slugify(instance.user.id)
     username = slugify(instance.user.get_fullname())
-    new_filename = user_id + "_" + username + '_300x300_'
+    new_filename = user_id + "_" + username + '_'
     image_path = f"avatars/{new_filename}"
 
     return image_path
@@ -27,7 +27,7 @@ class Profile(TimeStamp):
     avatar = models.ImageField(
         upload_to=get_upload_to,
         null=True, blank=True,
-        validators=[ImageValidator(width=300, height=300, size=500*1024)],
+        validators=[ImageValidator(size=4000*1024)],
     )
     facebook = models.CharField(
         'facebook', max_length=255, null=True, blank=True, default=None)
