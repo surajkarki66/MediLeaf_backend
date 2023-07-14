@@ -41,6 +41,15 @@ class FeedbackViewset(viewsets.ModelViewSet):
         "growth_habit": ["exact"],
         "duration": ["exact"],
     }
+    def get_serializer_context(self):
+        """
+        Extra context provided to the serializer class.
+        """
+        return {
+            'request': self.request,
+            'format': self.format_kwarg,
+            'view': self
+        }
 
     def get_permissions(self):
         if self.action in ["update", "partial_update", "destroy"]:
@@ -53,5 +62,4 @@ class FeedbackViewset(viewsets.ModelViewSet):
             return FeedbackListSerializer
 
         return super().get_serializer_class()
-
     
