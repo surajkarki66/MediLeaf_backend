@@ -10,8 +10,7 @@ from .models import Profile
 class ProfileUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ('avatar', 'slug', 'facebook',
-                  'instagram', 'linkedIn', 'twitter',)
+        fields = "__all__"
 
     def save(self, **kwargs):
         assert hasattr(self, '_errors'), (

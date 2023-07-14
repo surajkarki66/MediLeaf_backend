@@ -41,7 +41,6 @@ class ProfileViewSet(viewsets.ModelViewSet):
 
         # Assign user from request.user to the profile
         request.data['user'] = request.user.id
-
         return self.update(request, *args, **kwargs)
 
     def get_permissions(self):
