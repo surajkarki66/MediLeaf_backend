@@ -4,10 +4,10 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions, viewsets, filters
 
 
-
-from account.permissions import  IsVerifiedUser
+from account.permissions import IsVerifiedUser
 from .models import ContactUs, Feedback
-from contact_us.serializers import ContactUsSerializer, FeedbackSerializer, FeedbackListSerializer
+from contact_us.serializers import ContactUsSerializer, FeedbackSerializer, FeedbackListSerializer, FeedbackUpdateSerializer
+
 
 @extend_schema(summary='ContactUs viewset', tags=['Contact us'])
 class ContactUsViewSet(viewsets.ModelViewSet):
@@ -18,20 +18,22 @@ class ContactUsViewSet(viewsets.ModelViewSet):
                        filters.OrderingFilter,]
 
     search_fields = ["id", "first_name", "last_name", "subject", "email"]
-    ordering_fields = ["id", "first_name", "last_name", "created_at", "updated_at"]
+    ordering_fields = ["id", "first_name",
+                       "last_name", "created_at", "updated_at"]
+
 
 @extend_schema(summary='Feedback Viewset', tags=['Feedbacks'])
 class FeedbackViewset(viewsets.ModelViewSet):
     queryset = Feedback.objects.all()
-    serializer_class = FeedbackSerializer
+    serializer_class = FeedbackUpdateSerializer
     permission_classes = (permissions.IsAuthenticated, IsVerifiedUser)
     filter_backends = [DjangoFilterBackend, filters.SearchFilter,
                        filters.OrderingFilter,]
 
     search_fields = ["id", "family", "common_names", "genus", "species",]
     ordering_fields = ["id", "common_names", "family", "genus", "species",
-                        "created_at", "updated_at",]
-    
+                       "created_at", "updated_at",]
+
     filterset_fields = {
         "id": ["exact"],
         "created_at": ["gte", "lte", "exact", "gt", "lt"],
@@ -41,6 +43,9 @@ class FeedbackViewset(viewsets.ModelViewSet):
         "growth_habit": ["exact"],
         "duration": ["exact"],
     }
+    http_method_names = ('post', 'get', 'patch', 'delete',
+                         'head', 'options', 'trace',)
+
     def get_serializer_context(self):
         """
         Extra context provided to the serializer class.
@@ -56,10 +61,22 @@ class FeedbackViewset(viewsets.ModelViewSet):
             return [permissions.IsAdminUser()]
 
         return super().get_permissions()
-    
+
     def get_serializer_class(self):
         if self.action == 'list':
             return FeedbackListSerializer
+        if self.action == 'retrieve':
+            return FeedbackSerializer
 
         return super().get_serializer_class()
-    
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        kwargs['context'] = self.get_serializer_context()
+
+        request.data['user'] = request.user.id
+
+        return self.update(request, *args, **kwargs)

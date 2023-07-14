@@ -2,15 +2,13 @@ from rest_framework import permissions, status, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_protect
+
 
 from .models import Profile
 from account.permissions import IsOwner, IsVerifiedUser
 from .serializers import ProfileUpdateSerializer, UserProfileSerializer
 
 
-@method_decorator(csrf_protect, name='dispatch')
 @extend_schema(summary='User profile View set', tags=['Profile'])
 class ProfileViewSet(viewsets.ModelViewSet):
     '''This class is a viewset that allows you to create and update a user's profile'''
@@ -30,16 +28,32 @@ class ProfileViewSet(viewsets.ModelViewSet):
             'view': self
         }
 
+    def perform_create(self, serializer):
+        """
+        Called during the creation of a new profile.
+        Assigns the requesting user to the profile.
+        """
+        serializer.save(user=self.request.user)
+
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        kwargs['context'] = self.get_serializer_context()
+
+        # Assign user from request.user to the profile
+        request.data['user'] = request.user.id
+
+        return self.update(request, *args, **kwargs)
+
     def get_permissions(self):
         """
         If the action is create, then return the permissions IsAuthenticated() and IsVerifiedUser(),
-        otherwise return the default permissions
-        :return: The permissions for the view.
+        otherwise return the default permissions.
         """
         if self.action == "create":
             return [permissions.IsAuthenticated(), IsVerifiedUser()]
 
         return super().get_permissions()
+
 
 
 class UserProfileAPIView(APIView):
