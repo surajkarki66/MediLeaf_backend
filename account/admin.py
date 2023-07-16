@@ -28,7 +28,7 @@ class UserAdmin(admin.ModelAdmin):
     search_fields = ('first_name', 'last_name', 'email', 'contact',)
 
     readonly_fields = ('password', 'last_login',
-                       'created_at', 'updated_at', 'is_verified',)
+                       'created_at', 'updated_at',)
 
     @admin.display(description='Name')
     def fullname(self, obj):
