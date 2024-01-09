@@ -12,3 +12,4 @@ django-cloudinary-storage
 django-cors-headers
 psycopg2-binary
 requests
+whitenoise
