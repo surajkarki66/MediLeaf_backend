@@ -1,15 +1,12 @@
-import re
-
 from django.db import models
-from utilities.models import TimeStamp
 from django.contrib.postgres.fields import ArrayField
 from django_ckeditor_5.fields import CKEditor5Field
 from django.template.defaultfilters import slugify
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
-from django.conf import settings
 
+from utilities.models import TimeStamp
 from utilities.utils import unique_update_slugify
 from utilities.validators import ImageValidator
 
