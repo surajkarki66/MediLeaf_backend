@@ -39,8 +39,6 @@ class ProfileViewSet(viewsets.ModelViewSet):
         kwargs['partial'] = True
         kwargs['context'] = self.get_serializer_context()
 
-        # Assign user from request.user to the profile
-        request.data['user'] = request.user.id
         return self.update(request, *args, **kwargs)
 
     def get_permissions(self):
