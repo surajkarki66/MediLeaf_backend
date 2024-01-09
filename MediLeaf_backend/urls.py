@@ -3,6 +3,11 @@ from django.conf import settings
 from django.conf.urls import static
 from django.urls import path, include
 from django.utils.translation import gettext_lazy as _
+from drf_spectacular.views import (
+        SpectacularAPIView,
+        SpectacularRedocView,
+        SpectacularSwaggerView,
+    )
 
 from .views import api_status
 
@@ -22,28 +27,12 @@ urlpatterns = [
     path('api/v1/', include('plant.urls')),
     path('api/v1/', include('contact_us.urls')),
 
-]
+    # Documentation
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    path("docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
+    path("api/schema/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
 
-if settings.DEBUG:
-    from drf_spectacular.views import (
-        SpectacularAPIView,
-        SpectacularRedocView,
-        SpectacularSwaggerView,
-    )
-    urlpatterns = [
-        *urlpatterns,
-        # YOUR PATTERNS
-        path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
-        # Optional UI:
-        path(
-            "docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"
-        ),
-        path(
-            "api/schema/redoc/",
-            SpectacularRedocView.as_view(url_name="schema"),
-            name="redoc",
-        ),
-        *static.static(settings.STATIC_URL,
+    *static.static(settings.STATIC_URL,
                        document_root=settings.STATIC_ROOT),
-        *static.static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
-    ]
+    *static.static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
+]
