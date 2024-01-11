@@ -2,9 +2,7 @@ import os
 
 from datetime import datetime
 from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_protect
-from django.http import JsonResponse
-from django.middleware.csrf import get_token
+from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from rest_framework.views import APIView
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
@@ -35,11 +33,13 @@ User = get_user_model()
 tz = get_current_timezone()
 
 
+@method_decorator(ensure_csrf_cookie, name='dispatch')
 @extend_schema(summary='Get CSRF Token', tags=['CSRF'])
-def get_csrf(request):
-    csrf_token = get_token(request)
-    response = JsonResponse({"csrfToken": csrf_token})
-    return response
+class GetCSRFTokenView(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def get(self, request, format=None):
+        return Response({"success": "CSRF cookie is set"})
 
 @method_decorator(csrf_protect, name='dispatch')
 @extend_schema(summary='User signup', tags=['Account'])
