@@ -2,6 +2,8 @@ from rest_framework import viewsets
 from drf_spectacular.utils import extend_schema
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions, viewsets, filters
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_protect
 
 
 from account.permissions import IsVerifiedUser
@@ -9,6 +11,7 @@ from .models import ContactUs, Feedback
 from contact_us.serializers import ContactUsSerializer, FeedbackSerializer, FeedbackListSerializer, FeedbackUpdateSerializer
 
 
+@method_decorator(csrf_protect, name='dispatch')
 @extend_schema(summary='ContactUs viewset', tags=['Contact us'])
 class ContactUsViewSet(viewsets.ModelViewSet):
     queryset = ContactUs.objects.all()
@@ -22,6 +25,7 @@ class ContactUsViewSet(viewsets.ModelViewSet):
                        "last_name", "created_at", "updated_at"]
 
 
+@method_decorator(csrf_protect, name='dispatch')
 @extend_schema(summary='Feedback Viewset', tags=['Feedbacks'])
 class FeedbackViewset(viewsets.ModelViewSet):
     queryset = Feedback.objects.all()
@@ -76,7 +80,5 @@ class FeedbackViewset(viewsets.ModelViewSet):
     def partial_update(self, request, *args, **kwargs):
         kwargs['partial'] = True
         kwargs['context'] = self.get_serializer_context()
-
-        request.data['user'] = request.user.id
 
         return self.update(request, *args, **kwargs)
