@@ -41,7 +41,6 @@ def get_csrf(request):
     response = JsonResponse({"csrfToken": csrf_token})
     return response
 
-@method_decorator(csrf_protect, name='dispatch')
 @extend_schema(summary='User signup', tags=['Account'])
 class SignUpAPIView(generics.CreateAPIView):
     serializer_class = SignUpSerializer
@@ -118,7 +117,6 @@ class SignUpAPIView(generics.CreateAPIView):
             'message': "We have sent a verification link to your email address. Please verify your account."
         }, status=status.HTTP_201_CREATED)
 
-@method_decorator(csrf_protect, name='dispatch')
 class LoginAPIView(APIView):
     serializer_class = LoginSerializer
     permission_classes = (permissions.AllowAny,)
