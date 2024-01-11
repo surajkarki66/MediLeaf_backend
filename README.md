@@ -1,7 +1,7 @@
 # MediLeaf-backend
 This repository is a production-ready admin dashboard consisting of several REST APIs to access the knowledge base and user authentication of the MediLeaf project.
 
-## Local Preview
+## How to RUN?
 
 ### A. Using Docker
 1. Clone the repository
